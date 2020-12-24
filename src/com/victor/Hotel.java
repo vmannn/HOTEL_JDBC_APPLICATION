@@ -1,3 +1,4 @@
+package com.victor;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -14,13 +15,15 @@ public class Hotel {
 	Database myDatabase;
 	
 	
-	public Hotel() {
+	public Hotel() throws ClassNotFoundException, SQLException {
 		
 		rooms = new ArrayList<Room>();
 		myDatabase = new Database();
+		myDatabase.loadRoomsIntoArraylist(rooms);
 		name = null;
 		location = null;
 		occupationCount = 0;
+		
 		
 	}
 	
@@ -28,10 +31,11 @@ public class Hotel {
 		
 		numOfRooms = 0;
 		myDatabase = new Database();
-		myDatabase.setHotel(name, location);
+		myDatabase.setHotel(name, location);;
 		this.name = name;
 		this.location = location;
 		rooms = new ArrayList<Room>();
+		myDatabase.loadRoomsIntoArraylist(rooms);
 		
 	}
 	
@@ -115,7 +119,7 @@ public class Hotel {
     	occupationCount -= 1;
     	myDatabase.cancelReservation(name);
     	}
-    	catch(ArrayIndexOutOfBoundsException e) {
+    	catch(IndexOutOfBoundsException e) {
     		
     		System.out.println("No reservation was made for " + name + " so nothing to cancel...");
     		
@@ -123,12 +127,12 @@ public class Hotel {
     	
     }
     
-    public int findReservation(String name) {
+    public int findReservation(String named) {
     	
     	int i = 0;
     	for(Room r: rooms) {
     		
-    		if(r.getOccupantName().equals(name)) {
+    		if(r.getOccupantName().toString().equals(named)) {
     			return i;		
     		}
     		++i;
@@ -137,6 +141,8 @@ public class Hotel {
     }
     
     public void printReservationList() {
+    	
+    	boolean count = false;
     	
     	for(Room r: rooms) {
     		
@@ -147,9 +153,15 @@ public class Hotel {
     			System.out.println("Smoking room: " + r.getSmoking());
     			System.out.println("Bed type: " + r.getBedType());
     			System.out.println("Rate: " + r.getRate() + "\n");
-    		
+    		    count = true;
     		}	
     	}	
+    	
+    	if(count == false) {
+    		
+    		System.out.println("No resevations!! :( add a reservation to begin");
+    		
+    	}
     }
 	
     public double getDailySales() {

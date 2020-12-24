@@ -1,12 +1,42 @@
+package com.victor;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 
 public class Database {
 
+	public void loadRoomsIntoArraylist(ArrayList<Room> rooms) throws SQLException, ClassNotFoundException{
+		
+		Class.forName("com.mysql.cj.jdbc.Driver");
+		Connection c1 = DriverManager.getConnection("jdbc:mysql://localhost:3306/"+ "hotelapplication","root","jamjamcholo");
+		System.out.println("----Loading database entries into ArrayList----");
+		
+        Statement s = c1.createStatement();
+        s.execute("select * from rooms");
+        ResultSet rs = s.getResultSet();
+        
+        //public Room(int roomNum, String bedType, char smoking, double rate)
+        while(rs.next()) {
+        	
+        	Room room = new Room(rs.getInt(2), rs.getString(5), rs.getString(6).charAt(0), rs.getDouble(3));
+        	StringBuilder sb = new StringBuilder();
+        	sb.append(rs.getString(4));
+        	room.setOccupantName(sb);
+        	room.setOccupied(rs.getBoolean(7));
+        	rooms.add(room);
+        	
+        }
+
+       
+        
+		
+	}
+	
+	
 	public void addRoom(int roomNumber, String bedType, char smoking, double rate) throws ClassNotFoundException, SQLException {
 		
 		if(getRoomCount() < 10) {
@@ -33,7 +63,7 @@ public class Database {
 	}
 	
 	public void setHotel(String name, String address) throws ClassNotFoundException, SQLException {
-		
+	
 		Class.forName("com.mysql.cj.jdbc.Driver");
 		Connection c1 = DriverManager.getConnection("jdbc:mysql://localhost:3306/"+ "hotelapplication","root","jamjamcholo");
 		System.out.println("---connected---");

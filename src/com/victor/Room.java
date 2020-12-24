@@ -1,3 +1,4 @@
+package com.victor;
 
 public class Room {
 	
